@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-16.04'
+  vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
@@ -42,12 +42,13 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
-    - task: Bash@3
+    - task: PowerShell@2
       inputs:
         targetType: 'inline'
         script: |
-          echo $(Build.ArtifactStagingDirectory)
-          ls $(Build.ArtifactStagingDirectory)/*
+          write-output $(Build.ArtifactStagingDirectory)
+          
+          Get-ChildItem $(Build.ArtifactStagingDirectory) -Recurse
 - stage: Dev_stage
   jobs:
   - job: Dev_job_deploy
