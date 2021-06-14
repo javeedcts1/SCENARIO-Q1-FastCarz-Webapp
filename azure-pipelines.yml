@@ -54,16 +54,6 @@ stages:
         allowPartiallySucceededBuilds: true
         allowFailedBuilds: true
         targetPath: '$(Pipeline.Workspace)'
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: |
-          write-output $(Build.ArtifactStagingDirectory)
-          
-          Get-ChildItem $(Build.ArtifactStagingDirectory) -Recurse
-          write-output "#################"
-          write-output $(Pipeline.Workspace)
-          Get-ChildItem  $(Pipeline.Workspace) -Recurse
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
@@ -72,9 +62,22 @@ stages:
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
         packageForLinux: '$(Pipeline.Workspace)/drop/WebApp.zip'
 - stage: Prod_stage
+  condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
+  - deployment: DeployprodandQA
+    displayName: deploy prod and QA Web App
+    environment: 'Prod_ENV'
   - job: prod_job_deploy
     steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9fc0f583-f07e-4c61-bbfb-2f0bd0a1b279'
+        definition: '9'
+        buildVersionToDownload: 'latest'
+        allowPartiallySucceededBuilds: true
+        allowFailedBuilds: true
+        targetPath: '$(Pipeline.Workspace)'
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
@@ -82,8 +85,6 @@ stages:
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
         packageForLinux: '$(Pipeline.Workspace)/drop/WebApp.zip'
-- stage: QA_stage
-  jobs:
   - job: QA_job_deploy
     steps:
     - task: AzureRmWebAppDeployment@4
@@ -93,3 +94,4 @@ stages:
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-qa'
         packageForLinux: '$(Pipeline.Workspace)/drop/WebApp.zip'
+
