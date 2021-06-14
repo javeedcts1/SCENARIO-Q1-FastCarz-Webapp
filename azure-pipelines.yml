@@ -43,7 +43,7 @@ steps:
 stages:
 - stage: Dev_stage
   jobs:
-  - job: dev_job_1
+  - job: Dev_job_1
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
@@ -53,11 +53,10 @@ stages:
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
         packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 - stage: Prod_stage
-  dependson:
-  - Dev_stage
+  dependsOn: Dev_stage
   condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
-  - job: Prod_job_job1
+  - job: Prod_job_1
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
@@ -67,11 +66,10 @@ stages:
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
         packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 - stage: QA_stage
-  dependson:
-  - Dev_stage
+  dependsOn: Dev_stage
   condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
-  - job: QA_job_job1
+  - job: QA_job_1
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
@@ -80,4 +78,3 @@ stages:
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-qa'
         packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-
