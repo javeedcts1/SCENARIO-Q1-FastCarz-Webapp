@@ -70,8 +70,7 @@ stages:
           write-output $(Build.ArtifactStagingDirectory)
           
           Get-ChildItem $(Build.ArtifactStagingDirectory) -Recurse
-          Get-ChildItem 
-           $(Pipeline.Workspace) -Recurse
+          Get-ChildItem  $(Pipeline.Workspace) -Recurse
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
