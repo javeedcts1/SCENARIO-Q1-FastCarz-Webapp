@@ -18,8 +18,6 @@ stages:
 - stage: Build
   jobs:
   - job: Build
-    pool:
-      vmImage: 'windows-latest'
     steps:
     - task: NuGetToolInstaller@1
 
@@ -52,9 +50,14 @@ stages:
 - stage: Dev_stage
   jobs:
   - job: Dev_job_deploy
-    pool:
-      vmImage: 'windows-latest'
     steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          write-output $(Build.ArtifactStagingDirectory)
+          
+          Get-ChildItem $(Build.ArtifactStagingDirectory) -Recurse
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
@@ -65,8 +68,6 @@ stages:
 - stage: Prod_stage
   jobs:
   - job: prod_job_deploy
-    pool:
-      vmImage: 'windows-latest'
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
@@ -78,8 +79,6 @@ stages:
 - stage: QA_stage
   jobs:
   - job: QA_job_deploy
-    pool:
-      vmImage: 'windows-latest'
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
