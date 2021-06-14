@@ -35,6 +35,7 @@ stages:
       inputs:
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
+    
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
@@ -47,6 +48,8 @@ stages:
           write-output $(Build.ArtifactStagingDirectory)
           
           Get-ChildItem $(Build.ArtifactStagingDirectory) -Recurse
+          Get-ChildItem 
+           $(System.DefaultWorkingDirectory) -Recurse
 - stage: Dev_stage
   jobs:
   - job: Dev_job_deploy
@@ -58,6 +61,8 @@ stages:
           write-output $(Build.ArtifactStagingDirectory)
           
           Get-ChildItem $(Build.ArtifactStagingDirectory) -Recurse
+          Get-ChildItem 
+           $(System.DefaultWorkingDirectory) -Recurse
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
