@@ -61,7 +61,7 @@ stages:
         azureSubscription: 'spnq1'
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
-        packageForLinux: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
+        packageForLinux: '$(Build.ArtifactStagingDirectory)/WebApp.zip'
 - stage: Prod_stage
   jobs:
   - job: prod_job_deploy
@@ -74,7 +74,7 @@ stages:
         azureSubscription: 'spnq1'
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
-        packageForLinux: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
+        packageForLinux: '$(Build.ArtifactStagingDirectory)/WebApp.zip'
 - stage: QA_stage
   jobs:
   - job: QA_job_deploy
@@ -87,4 +87,4 @@ stages:
         azureSubscription: 'spnq1'
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-qa'
-        packageForLinux: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
+        packageForLinux: '$(Build.ArtifactStagingDirectory)/WebApp.zip'
