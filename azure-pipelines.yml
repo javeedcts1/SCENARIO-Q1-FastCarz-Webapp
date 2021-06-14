@@ -39,11 +39,10 @@ steps:
     publishLocation: 'Container'
 
 #Deploying code in webapps are part of release pipeline which are not included in azure-pipelines.yml, Details of steps are in SCENARIO-Q1-Webapp-V2.pdf.
-
 stages:
 - stage: Dev_stage
   jobs:
-  - job: Dev_job_1
+  - job: Dev_job_deploy
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
@@ -53,10 +52,8 @@ stages:
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
         packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 - stage: Prod_stage
-  dependsOn: Dev_stage
-  condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
-  - job: Prod_job_1
+  - job: prod_job_deploy
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
@@ -66,10 +63,8 @@ stages:
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
         packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 - stage: QA_stage
-  dependsOn: Dev_stage
-  condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
-  - job: QA_job_1
+  - job: QA_job_deploy
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
