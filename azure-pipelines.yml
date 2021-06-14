@@ -14,60 +14,71 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@1
+stages: 
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-stages:
-  - stage: Dev_stage
-    jobs:
-    - job: Dev_job_deploy
-      steps:
-      - task: AzureRmWebAppDeployment@4
-        inputs:
-          ConnectionType: 'AzureRM'
-          azureSubscription: 'spnq1'
-          appType: 'webApp'
-          WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
-          packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-  - stage: Prod_stage
-    jobs:
-    - job: prod_job_deploy
-      steps:
-      - task: AzureRmWebAppDeployment@4
-        inputs:
-          ConnectionType: 'AzureRM'
-          azureSubscription: 'spnq1'
-          appType: 'webApp'
-          WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
-          packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-  - stage: QA_stage
-    jobs:
-    - job: QA_job_deploy
-      steps:
-      - task: AzureRmWebAppDeployment@4
-        inputs:
-          ConnectionType: 'AzureRM'
-          azureSubscription: 'spnq1'
-          appType: 'webApp'
-          WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-qa'
-          packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    - task: VSTest@2
+      inputs:
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+- stage: Dev_stage
+  jobs:
+  - job: Dev_job_deploy
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'spnq1'
+        appType: 'webApp'
+        WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- stage: Prod_stage
+  jobs:
+  - job: prod_job_deploy
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'spnq1'
+        appType: 'webApp'
+        WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- stage: QA_stage
+  jobs:
+  - job: QA_job_deploy
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'spnq1'
+        appType: 'webApp'
+        WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-qa'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
