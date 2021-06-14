@@ -61,7 +61,7 @@ stages:
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
         packageForLinux: '$(Pipeline.Workspace)/drop/WebApp.zip'
-- stage: Prod_stage
+- stage: Prod_and_QA_stage
   condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
   - deployment: DeployprodandQA
