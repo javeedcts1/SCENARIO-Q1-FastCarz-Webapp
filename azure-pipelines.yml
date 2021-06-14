@@ -41,15 +41,6 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: |
-          write-output $(Build.ArtifactStagingDirectory)
-          
-          Get-ChildItem $(Build.ArtifactStagingDirectory) -Recurse
-          Get-ChildItem 
-           $(System.DefaultWorkingDirectory) -Recurse
 - stage: Dev_stage
   jobs:
   - job: Dev_job_deploy
