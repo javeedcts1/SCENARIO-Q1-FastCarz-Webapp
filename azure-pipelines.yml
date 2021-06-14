@@ -40,5 +40,44 @@ steps:
 
 #Deploying code in webapps are part of release pipeline which are not included in azure-pipelines.yml, Details of steps are in SCENARIO-Q1-Webapp-V2.pdf.
 
-
+stages:
+- stage: Dev_stage
+  jobs:
+  - job: dev_job_1
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'spnq1'
+        appType: 'webApp'
+        WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- stage: Prod_stage
+  dependson:
+  - Dev_stage
+  condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+  - job: Prod_job_job1
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'spnq1'
+        appType: 'webApp'
+        WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+- stage: QA_stage
+  dependson:
+  - Dev_stage
+  condition: and(succeeded('Dev_stage'), ne(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+  - job: QA_job_job1
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'spnq1'
+        appType: 'webApp'
+        WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-qa'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 
