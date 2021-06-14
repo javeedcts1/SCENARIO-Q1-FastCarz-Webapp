@@ -40,7 +40,7 @@ stages:
         configuration: '$(buildConfiguration)'
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        PathtoPublish: '$(System.DefaultWorkingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
 - stage: Dev_stage
@@ -55,7 +55,7 @@ stages:
         azureSubscription: 'spnq1'
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-dev'
-        packageForLinux: '$(Build.defaultworkingDirectory)/WebApp.zip'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
 - stage: Prod_stage
   jobs:
   - job: prod_job_deploy
@@ -68,7 +68,7 @@ stages:
         azureSubscription: 'spnq1'
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-pord'
-        packageForLinux: '$(Build.defaultworkingDirectory)/WebApp.zip'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
 - stage: QA_stage
   jobs:
   - job: QA_job_deploy
@@ -81,4 +81,4 @@ stages:
         azureSubscription: 'spnq1'
         appType: 'webApp'
         WebAppName: 'SCENARIO-Q1-FastCarz-Webapp-qa'
-        packageForLinux: '$(Build.defaultworkingDirectory)/WebApp.zip'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/drop/WebApp.zip'
